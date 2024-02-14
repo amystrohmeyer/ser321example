@@ -20,7 +20,7 @@ import java.io.*;
 import java.net.*;
 import java.nio.charset.Charset;
 import java.util.*;
-//import org.json.*:
+//import org.json.*;
 
 
 
@@ -233,7 +233,46 @@ class WebServer {
             builder.append("\n");
             builder.append("Invalid input. Please provide valid integers for num1 and num2.");
           }
+        }
+        else if (request.contains("power?")) {
+          // This gives the power of a number to another number
 
+          Map<String, String> query_pairs = new LinkedHashMap<String, String>();
+          // extract path parameters
+          query_pairs = splitQuery(request.replace("power?", ""));
+
+          // extract required fields from parameters
+          Integer num1 = Integer.parseInt(query_pairs.get("num1"));
+          Integer num2 = Integer.parseInt(query_pairs.get("num2"));
+
+          // do math
+          Double result = Math.pow(num1, num2);
+
+          // Generate response
+          builder.append("HTTP/1.1 200 OK\n");
+          builder.append("Content-Type: text/html; charset=utf-8\n");
+          builder.append("\n");
+          builder.append("Result is: " + result);
+
+          if (num1 == null || num2 == null) {
+            builder.append("HTTP/1.1 410 Wrong Format\n");
+            builder.append("Content-Type: text/html; charset=utf-8\n");
+            builder.append("\n");
+            builder.append("No number inserted.");
+          }
+          try {
+            // Generate response
+            builder.append("HTTP/1.1 200 OK\n");
+            builder.append("Content-Type: text/html; charset=utf-8\n");
+            builder.append("\n");
+            builder.append("Result is: " + result);
+          } catch (NumberFormatException e) {
+            // Handle the case when the input is not valid integers
+            builder.append("HTTP/1.1 400 Bad Request\n");
+            builder.append("Content-Type: text/html; charset=utf-8\n");
+            builder.append("\n");
+            builder.append("Invalid input. Please provide valid integers for num1 and num2.");
+          }
         } else if (request.contains("github?")) {
           // pulls the query from the request and runs it with GitHub's REST API
           // check out https://docs.github.com/rest/reference/
@@ -280,7 +319,7 @@ class WebServer {
               builder.append("Full Name:" + fullName + " ");
               builder.append("Repo ID: " + repoID + " ");
               builder.append("Login: " + ownerLogin + " ");
-            }/*
+            }
 
             builder.append("</ul></body></html>");
 
@@ -296,9 +335,9 @@ class WebServer {
             builder.append("<html><body><h1>Error</h1>");
             builder.append("<p>Failed to fetch or parse GitHub repositories: " + e.getMessage() + "</p>");
             builder.append("</body></html>");
-          }*/
+          }
 
-
+*/
 
         } else {
           // if the request is not recognized at all
