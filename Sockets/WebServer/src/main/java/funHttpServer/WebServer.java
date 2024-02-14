@@ -18,13 +18,11 @@ package funHttpServer;
 
 import java.io.*;
 import java.net.*;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Random;
-import java.util.Map;
-import java.util.LinkedHashMap;
 import java.nio.charset.Charset;
+import java.util.*;
+//import org.json.*:
+
+
 
 class WebServer {
   public static void main(String args[]) {
@@ -216,6 +214,25 @@ class WebServer {
 
           // TODO: Include error handling here with a correct error code and
           // a response that makes sense
+          if (num1 == null || num2 == null) {
+            builder.append("HTTP/1.1 410 Wrong Format\n");
+            builder.append("Content-Type: text/html; charset=utf-8\n");
+            builder.append("\n");
+            builder.append("No number inserted.");
+          }
+          try {
+            // Generate response
+            builder.append("HTTP/1.1 200 OK\n");
+            builder.append("Content-Type: text/html; charset=utf-8\n");
+            builder.append("\n");
+            builder.append("Result is: " + result);
+          } catch (NumberFormatException e) {
+            // Handle the case when the input is not valid integers
+            builder.append("HTTP/1.1 400 Bad Request\n");
+            builder.append("Content-Type: text/html; charset=utf-8\n");
+            builder.append("\n");
+            builder.append("Invalid input. Please provide valid integers for num1 and num2.");
+          }
 
         } else if (request.contains("github?")) {
           // pulls the query from the request and runs it with GitHub's REST API
@@ -235,8 +252,53 @@ class WebServer {
           builder.append("Content-Type: text/html; charset=utf-8\n");
           builder.append("\n");
           builder.append("Check the todos mentioned in the Java source file");
-          // TODO: Parse the JSON returned by your fetch and create an appropriate
-          // response based on what the assignment document asks for
+          // TODO:
+          /*String json3 = "{'fullName':'repos', 'repoID':'123123', 'login':'owner login'}";
+          JSONObject newObject = new JSONObject(json3);
+          System.out.println(newObject.getString("fullName"));
+          System.out.println(newObject.getString("repoID"));
+          System.out.println(newObject.getString("login"));*/
+          /*String query = request.substring("github?query=".length());
+
+          try {
+            // Fetch the JSON response from GitHub API
+            String jsonResponse = fetchURL("https://api.github.com/" + query);
+
+            // Parse the JSON response
+            JSONArray reposArray = new JSONArray(jsonResponse);
+
+            // Prepare response data
+            builder.append("<html><body><h1>GitHub Repositories</h1><ul>");
+
+            for (int i = 0; i < reposArray.length(); i++) {
+              JSONObject repo = reposArray.getJSONObject(i);
+              String fullName = repo.getString("full_name");
+              String repoID = repo.getString("id");
+              JSONObject owner = repo.getJSONObject("owner");
+              String ownerLogin = owner.getString("login");
+
+              builder.append("Full Name:" + fullName + " ");
+              builder.append("Repo ID: " + repoID + " ");
+              builder.append("Login: " + ownerLogin + " ");
+            }/*
+
+            builder.append("</ul></body></html>");
+
+            // Generate response
+            builder.append("HTTP/1.1 200 OK\n");
+            builder.append("Content-Type: text/html; charset=utf-8\n");
+            builder.append("\n");
+          } catch (JSONException e) {
+            // Handle exceptions
+            builder.append("HTTP/1.1 500 Internal Server Error\n");
+            builder.append("Content-Type: text/html; charset=utf-8\n");
+            builder.append("\n");
+            builder.append("<html><body><h1>Error</h1>");
+            builder.append("<p>Failed to fetch or parse GitHub repositories: " + e.getMessage() + "</p>");
+            builder.append("</body></html>");
+          }*/
+
+
 
         } else {
           // if the request is not recognized at all
